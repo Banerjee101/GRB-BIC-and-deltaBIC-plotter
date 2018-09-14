@@ -41,7 +41,9 @@ LC2_rate, LC2_time=np.loadtxt("LC_n3_1s830.qdp", unpack=True, usecols=[1, 0])
 
 pha_bins = 476				#Set the PHA bins from data (generalize this)
 Nlog = np.log(pha_bins)
-range1=8.5				#set the start time
+range1=8.5				#set the reference time for the plot
+x_lim_min=7.5				#set the x limit minimum
+x_lim_max=28.0				#set the x limit maximum
 
 #This is for creating BIC 
 bkn2power_BIC = bkn2power_ifl_pgstat + (pha_bins-bkn2power_ifl_dof)*Nlog
@@ -64,7 +66,8 @@ bb_bandC_BIC = bb_bandC_ifl_pgstat + (pha_bins-bb_bandC_ifl_dof)*Nlog
 #Subplots
 fig, (ay1, ay2) = plt.subplots(2, sharex=True, gridspec_kw = {'height_ratios':[2, 1]})
 
-
+plt.xlim(xmin=x_lim_min)
+plt.xlim(xmax=x_lim_max)
 ay1.plot(np.arange(range1, range1+len(bkn2power_BIC)), bkn2power_BIC, "v-", lw = 1.0, markersize=7, label='bkn2pow' )
 ay1.plot(np.arange(range1, range1+len(band_BIC)), band_BIC, "^-", lw = 1.0, markersize=7, label='Band')
 ay1.plot(np.arange(range1, range1+len(three_comp_BIC)), three_comp_BIC, "<-", lw = 1.0, markersize=7, label='BB + CPL + CPL')
@@ -90,6 +93,8 @@ for h in range(0,np.size(col_stackT,1)):
 	d1=abs(tups[0][0]-tups[1][0])
 	d2=abs(tups[0][0]-tups[2][0])
 	d3=abs(tups[0][0]-tups[3][0])
+	plt.xlim(xmin=x_lim_min)
+	plt.xlim(xmax=x_lim_max)
 	ay2.plot((range1+steps),d1,"-*", lw = 1.0, markersize=5, color= 'blue')
 	ay2.plot((range1+steps),d2,"-s", lw = 1.0, markersize=5, color= 'red')
 	ay2.plot((range1+steps),d3,"-8", lw = 1.0, markersize=5, color= 'green')
