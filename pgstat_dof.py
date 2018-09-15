@@ -1,6 +1,8 @@
 import os
 import math
 import scipy
+import texttable as tt
+import itertools
 import numpy as np
 import pandas as pd
 from astropy.io import ascii
@@ -44,6 +46,8 @@ Nlog = np.log(pha_bins)
 range1=8.5				#set the reference time for the plot
 x_lim_min=7.5				#set the x limit minimum
 x_lim_max=28.0				#set the x limit maximum
+corr_lim=6.0				#Set the correlation limit here
+
 
 #This is for creating BIC 
 bkn2power_BIC = bkn2power_ifl_pgstat + (pha_bins-bkn2power_ifl_dof)*Nlog
@@ -93,28 +97,46 @@ for h in range(0,np.size(col_stackT,1)):
 	d1=abs(tups[0][0]-tups[1][0])
 	d2=abs(tups[0][0]-tups[2][0])
 	d3=abs(tups[0][0]-tups[3][0])
+	time_stamps=range1+steps
 	plt.xlim(xmin=x_lim_min)
 	plt.xlim(xmax=x_lim_max)
-	ay2.plot((range1+steps),d1,"-*", lw = 1.0, markersize=5, color= 'blue')
-	ay2.plot((range1+steps),d2,"-s", lw = 1.0, markersize=5, color= 'red')
-	ay2.plot((range1+steps),d3,"-8", lw = 1.0, markersize=5, color= 'green')
+	ay2.plot(time_stamps,d1,"-*", lw = 1.0, markersize=5, color= 'blue')
+	ay2.plot(time_stamps,d2,"-s", lw = 1.0, markersize=5, color= 'red')
+	ay2.plot(time_stamps,d3,"-8", lw = 1.0, markersize=5, color= 'green')
 	m1,m2,m3,m4=tups[0][1],tups[1][1],tups[2][1],tups[3][1]
-	ay2.text((range1+steps),d1, m1+m2, fontsize = 10)
-	ay2.text((range1+steps),d2, m1+m3, fontsize = 10)
-	ay2.text((range1+steps),d3, m1+m4, fontsize = 10)
+	ay2.text(time_stamps,d1, m1+m2, fontsize = 10)
+	ay2.text(time_stamps,d2, m1+m3, fontsize = 10)
+	ay2.text(time_stamps,d3, m1+m4, fontsize = 10)
 	red_patch = mpatches.Patch(color='red', label='a=bkn2pow')
 	blue_patch = mpatches.Patch(color='blue', label='b=Band')
 	yellow_patch = mpatches.Patch(color='yellow', label='c=BB + CPL + CPL')
 	green_patch = mpatches.Patch(color='green', label='d=BB + BandC')
-	ay2.legend(handles=[red_patch, blue_patch, yellow_patch, green_patch], fontsize = 9)	
+	ay2.legend(handles=[red_patch, blue_patch, yellow_patch, green_patch], fontsize = 9)
 	steps=steps+1
-#ay2.plot(np.arange(8.5, 8.5+len(bkn2power_BIC)),d1,"*-", lw = 1.0, markersize=5, label='bkn2pow - Band')
-#ay2.plot(np.arange(8.5, 8.5+len(bkn2power_three_comp)),bkn2power_three_comp,"s-", lw = 1.0, markersize=5, label='bkn2pow - (BB + CPL + CPL)')
-#ay2.plot(np.arange(8.5, 8.5+len(bkn2power_bb_bandC)),bkn2power_bb_bandC,"8-", lw = 1.0, markersize=5, label='bkn2pow - (BB + Band)')
-#ay2.plot(np.arange(8.5, 8.5+len(band_three_comp)),band_three_comp,"o-", lw = 1.0, markersize=5, label='Band - (BB + CPL + CPL)')
-#ay2.plot(np.arange(8.5, 8.5+len(band_bb_bandC)),band_bb_bandC,"d-", lw = 1.0, markersize=5, label='Band - (BB + Band)')
-#ay2.plot(np.arange(8.5, 8.5+len(three_comp_bb_bandC)),three_comp_bb_bandC,"h-", lw = 1.0, markersize=5, label='(BB + CPL + CPL) - (BB + Band)')
-#ay2.legend(numpoints=1,prop={'size':10},loc="upper right")
+	
+	#Section to sort the strongest correlation model
+	model_conv=''
+	if d1<=corr_lim:
+		if m1=="a":
+			model_conv='bkn2pow'
+		elif m1=='b':
+			model_conv='Band'
+		elif m1=='c':
+			model_conv='BB + CPL + CPL'
+		elif m1=='d':
+			model_conv='BB + BandC'
+		print (model_conv+" is the strongest correlation model")
+		#table=tt.Texttable()
+		#headings=['Time Stamps', 'Strongest Correlation Model']
+		#table.header(headings)
+		#for row in zip(itertools.repeat(time_stamps, np.size(col_stackT,1)), str(model_conv)):		
+		#	table.add_row(row)
+		#s = table.draw()
+		#print(s)
+
+	#section to write the data into LaTeX Table
+	
+	
 
 ay2.axhline(y=2, color='black', lw=0.7)
 ay2.axhline(y=6, color='black', lw=0.7)
