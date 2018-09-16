@@ -4,7 +4,6 @@ import scipy
 import texttable as tt
 import itertools as itt
 import numpy as np
-import pandas as pd
 from astropy.io import ascii
 from astropy.io import fits
 import matplotlib.pyplot as plt
