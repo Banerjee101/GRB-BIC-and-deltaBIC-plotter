@@ -35,8 +35,8 @@ mo2_ifl_pgstat, mo2_ifl_dof = np.loadtxt("result_band_stat.txt", unpack=True, us
 mo3_ifl_pgstat, mo3_ifl_dof = np.loadtxt("GRB160509AA_three_comp_stat.txt", unpack=True, usecols=[1,2])
 mo4_ifl_pgstat, mo4_ifl_dof = np.loadtxt("results_bandC_stat_freeze.txt", unpack=True, usecols=[1,2])
 
-LC1_rate, LC1_time=np.loadtxt("LC_LLE20000100000.qdp", unpack=True, usecols=[1, 0])
-LC2_rate, LC2_time=np.loadtxt("LC_n3_1s830.qdp", unpack=True, usecols=[1, 0])
+LC1_time, LC1_rate=np.loadtxt("LC_LLE20000100000.qdp", unpack=True, usecols=[0, 1])
+LC2_time, LC2_rate=np.loadtxt("LC_n3_1s830.qdp", unpack=True, usecols=[0, 1])
 
 #####################################################################################################################################################
 
@@ -64,16 +64,16 @@ fig, (ay1, ay2) = plt.subplots(2, sharex=True, gridspec_kw = {'height_ratios':[2
 
 plt.xlim(xmin=x_lim_min)
 plt.xlim(xmax=x_lim_max)
-ay1.plot(np.arange(range1, range1+len(mo1_BIC)), mo1_BIC, "v-", lw = 1.0, markersize=7, label=mo1)
-ay1.plot(np.arange(range1, range1+len(mo2_BIC)), mo2_BIC, "^-", lw = 1.0, markersize=7, label=mo2)
-ay1.plot(np.arange(range1, range1+len(mo3_BIC)), mo3_BIC, "<-", lw = 1.0, markersize=7, label=mo3)
-ay1.plot(np.arange(range1, range1+len(mo4_BIC)), mo4_BIC, ">-", lw = 1.0, markersize=7, label=mo4)
+ay1.plot(np.arange(range1, range1+len(mo1_BIC)), mo1_BIC, "v-", lw = 1.0, markersize=7, label=mo1, color='blue')
+ay1.plot(np.arange(range1, range1+len(mo2_BIC)), mo2_BIC, "^-", lw = 1.0, markersize=7, label=mo2, color='green')
+ay1.plot(np.arange(range1, range1+len(mo3_BIC)), mo3_BIC, "<-", lw = 1.0, markersize=7, label=mo3, color='red')
+ay1.plot(np.arange(range1, range1+len(mo4_BIC)), mo4_BIC, ">-", lw = 1.0, markersize=7, label=mo4, color='orange')
 ay11=ay1.twinx()
 ay11.axis('off')
-ay11.plot(LC1_time, LC1_rate, lw=1.0, ls='steps-post', color='red', label='LC1')
+ay11.plot(LC1_time, LC1_rate, lw=1.0, ls='steps-post', label='LC1', color='gray')
 ay12=ay1.twinx()
 ay12.axis('off')
-ay12.plot(LC2_time, LC2_rate, lw=1.0, ls='steps-post', label='LC2', color ='blue')
+ay12.plot(LC2_time, LC2_rate, lw=1.0, ls='steps-post', label='LC2', color ='purple')
 ay1.legend(numpoints=1,prop={'size':10},loc="upper right")
 
 #combining the arrays into a text file
@@ -82,7 +82,7 @@ col_stackT = col_stack.transpose()
 np.savetxt('BIC_Stack.txt', col_stackT, delimiter='  ')
 steps = 0
 table=tt.Texttable(max_width=0)
-headings=['Time Stamps', 'Strongest Correlation Model', 'Delta BIC 1', 'Delta BIC 2', 'Delta BIC 3', 'Models with ascending order of BICs' ]
+headings=['Time Stamps', 'Models with ascending order of BICs', 'Delta BIC 1', 'Delta BIC 2', 'Delta BIC 3', 'Strongest Correlation Model' ]
 table.header(headings)
 for h in range(0,np.size(col_stackT,1)):
 	list1 = np.loadtxt("BIC_Stack.txt", unpack=True, usecols=[h])
@@ -95,17 +95,17 @@ for h in range(0,np.size(col_stackT,1)):
 	time_stamps=range1+steps
 	plt.xlim(xmin=x_lim_min)
 	plt.xlim(xmax=x_lim_max)
-	ay2.plot(time_stamps,d1,"-*", lw = 1.0, markersize=5, color= 'blue')
-	ay2.plot(time_stamps,d2,"-s", lw = 1.0, markersize=5, color= 'red')
-	ay2.plot(time_stamps,d3,"-8", lw = 1.0, markersize=5, color= 'green')
+	ay2.plot(time_stamps,d1,"-*", lw = 1.0, markersize=5, color= 'black')
+	ay2.plot(time_stamps,d2,"-s", lw = 1.0, markersize=5, color= 'black')
+	ay2.plot(time_stamps,d3,"-8", lw = 1.0, markersize=5, color= 'black')
 	m1,m2,m3,m4=tups[0][1][0],tups[1][1][0],tups[2][1][0],tups[3][1][0]
 	ay2.text(time_stamps,d1, m1+m2, fontsize = 10)
 	ay2.text(time_stamps,d2, m1+m3, fontsize = 10)
 	ay2.text(time_stamps,d3, m1+m4, fontsize = 10)
-	red_patch = mpatches.Patch(color='red', label='a='+mo1)
-	blue_patch = mpatches.Patch(color='blue', label='b='+mo2)
-	yellow_patch = mpatches.Patch(color='yellow', label='c='+mo3)
-	green_patch = mpatches.Patch(color='green', label='d='+mo4)
+	red_patch = mpatches.Patch(color='blue', label='a='+mo1)
+	blue_patch = mpatches.Patch(color='green', label='b='+mo2)
+	yellow_patch = mpatches.Patch(color='red', label='c='+mo3)
+	green_patch = mpatches.Patch(color='orange', label='d='+mo4)
 	ay2.legend(handles=[red_patch, blue_patch, yellow_patch, green_patch], fontsize = 9)
 	steps=steps+1
 	
@@ -113,10 +113,15 @@ for h in range(0,np.size(col_stackT,1)):
 	m11,m22,m33,m44=tups[0][2],tups[1][2],tups[2][2],tups[3][2]
 	model_conv=''
 	if d1<=corr_lim:
-		model_conv=m11+' and '+m22
+		model_conv='('+m11+') / ('+m22+')'
+		if d2<=corr_lim:
+			model_conv='('+m11+') / ('+m22+') / ('+m33+')'
+			if d3<=corr_lim:
+				model_conv='all models have strong correlation'
 	elif d1>=corr_lim:
-		model_conv=' No strong correlation '
-	for row in zip(itt.repeat(time_stamps, np.size(col_stackT,1)), [model_conv], [d1], [d2], [d3], [m11+' < '+m22+' < '+m33+' < '+m44]):
+		#model_conv='('+m11+') / ('+m22+') / ('+m33+') / ('+m44+')'
+		model_conv='all models have weak correlation'
+	for row in zip(itt.repeat(time_stamps, np.size(col_stackT,1)), [m11+' < '+m22+' < '+m33+' < '+m44], [d1], [d2], [d3], [model_conv]):
 		table.add_row(row)
 s = table.draw()
 print s
@@ -124,7 +129,7 @@ print s
 
 #####################################################################################################################################################	
 
-#This is the plot formatting section
+#This is the plotting section
 ay2.axhline(y=2, color='black', lw=0.7)
 ay2.axhline(y=6, color='black', lw=0.7)
 ay2.axhline(y=10, color='black', lw=0.7)
