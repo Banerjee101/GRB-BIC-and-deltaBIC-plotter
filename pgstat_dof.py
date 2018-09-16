@@ -125,7 +125,7 @@ print s
 
 #####################################################################################################################################################	
 
-#This is the plotting section
+#This is the plot formatting section
 ay2.axhline(y=2, color='black', lw=0.7)
 ay2.axhline(y=6, color='black', lw=0.7)
 ay2.axhline(y=10, color='black', lw=0.7)
