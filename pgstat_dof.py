@@ -2,7 +2,7 @@ import os
 import math
 import scipy
 import texttable as tt
-import itertools
+import itertools as itt
 import numpy as np
 import pandas as pd
 from astropy.io import ascii
@@ -89,6 +89,9 @@ col_stack = np.column_stack([bkn2power_BIC, band_BIC, three_comp_BIC, bb_bandC_B
 col_stackT = col_stack.transpose()
 np.savetxt('BIC_Stack.txt', col_stackT, delimiter='  ')
 steps = 0
+table=tt.Texttable()
+headings=['Time Stamps', 'Strongest Correlation Model']
+table.header(headings)
 for h in range(0,np.size(col_stackT,1)):
 	list1 = np.loadtxt("BIC_Stack.txt", unpack=True, usecols=[h])
 	list2 = np.array(['a','b','c','d'])
@@ -125,16 +128,13 @@ for h in range(0,np.size(col_stackT,1)):
 			model_conv='BB + CPL + CPL'
 		elif m1=='d':
 			model_conv='BB + BandC'
-		print (model_conv+" is the strongest correlation model")
-		#table=tt.Texttable()
-		#headings=['Time Stamps', 'Strongest Correlation Model']
-		#table.header(headings)
-		#for row in zip(itertools.repeat(time_stamps, np.size(col_stackT,1)), str(model_conv)):		
-		#	table.add_row(row)
-		#s = table.draw()
-		#print(s)
-
-	#section to write the data into LaTeX Table
+		else:
+			model_conv='	'
+		#print (model_conv+" is the strongest correlation model")
+	for row in zip(itt.repeat(time_stamps, np.size(col_stackT,1)), [model_conv]):
+		table.add_row(row)
+s = table.draw()
+print(s)
 	
 	
 
