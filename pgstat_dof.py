@@ -13,7 +13,7 @@ from matplotlib import rcParams, cycler
 from scipy import stats
 import matplotlib as mpl
 
-########################################
+#####################################################################################################################################################
 
 font = {
         'weight' : 'bold',
@@ -31,51 +31,44 @@ lstyle = 'None'
 
 
 #For reading the data from ASCII
-bkn2power_ifl_pgstat, bkn2power_ifl_dof = np.loadtxt("GRB160509A_bkn2powC_stat.txt", unpack=True, usecols=[1,2])
-band_ifl_pgstat, band_ifl_dof = np.loadtxt("result_band_stat.txt", unpack=True, usecols=[1,2])
-three_comp_ifl_pgstat, three_comp_ifl_dof = np.loadtxt("GRB160509AA_three_comp_stat.txt", unpack=True, usecols=[1,2])
-bb_bandC_ifl_pgstat, bb_bandC_ifl_dof = np.loadtxt("results_bandC_stat_freeze.txt", unpack=True, usecols=[1,2])
+mo1_ifl_pgstat, mo1_ifl_dof = np.loadtxt("GRB160509A_bkn2powC_stat.txt", unpack=True, usecols=[1,2])
+mo2_ifl_pgstat, mo2_ifl_dof = np.loadtxt("result_band_stat.txt", unpack=True, usecols=[1,2])
+mo3_ifl_pgstat, mo3_ifl_dof = np.loadtxt("GRB160509AA_three_comp_stat.txt", unpack=True, usecols=[1,2])
+mo4_ifl_pgstat, mo4_ifl_dof = np.loadtxt("results_bandC_stat_freeze.txt", unpack=True, usecols=[1,2])
+
 LC1_rate, LC1_time=np.loadtxt("LC_LLE20000100000.qdp", unpack=True, usecols=[1, 0])
 LC2_rate, LC2_time=np.loadtxt("LC_n3_1s830.qdp", unpack=True, usecols=[1, 0])
 
-#print t_plot
-#print len(t_plot), len(bkn2power_pgstat)
+#####################################################################################################################################################
 
-pha_bins = 476				#Set the PHA bins from data (generalize this)
-Nlog = np.log(pha_bins)
-range1=8.5				#set the reference time for the plot
-x_lim_min=7.5				#set the x limit minimum
-x_lim_max=28.0				#set the x limit maximum
-corr_lim=6.0				#Set the correlation limit here
+#setting the input parameters
+pha_bins = 476									#Set the PHA bins from data (generalize this)
+range1=8.5									#set the reference time for the plot
+x_lim_min=7.5									#set the x limit minimum
+x_lim_max=28.0									#set the x limit maximum
+corr_lim=6.0									#Set the correlation limit here
+mo1,mo2,mo3,mo4='bkn2pow', 'Band', 'BB + CPL + CPL', 'BB + BandC'		#Set the 4 model names here, should be the same as input order
 
+#####################################################################################################################################################
 
 #This is for creating BIC 
-bkn2power_BIC = bkn2power_ifl_pgstat + (pha_bins-bkn2power_ifl_dof)*Nlog
-band_BIC = band_ifl_pgstat + (pha_bins-band_ifl_dof)*Nlog
-three_comp_BIC = three_comp_ifl_pgstat + (pha_bins-three_comp_ifl_dof)*Nlog
-bb_bandC_BIC = bb_bandC_ifl_pgstat + (pha_bins-bb_bandC_ifl_dof)*Nlog
+Nlog = np.log(pha_bins)
+mo1_BIC = mo1_ifl_pgstat + (pha_bins-mo1_ifl_dof)*Nlog
+mo2_BIC = mo2_ifl_pgstat + (pha_bins-mo2_ifl_dof)*Nlog
+mo3_BIC = mo3_ifl_pgstat + (pha_bins-mo3_ifl_dof)*Nlog
+mo4_BIC = mo4_ifl_pgstat + (pha_bins-mo4_ifl_dof)*Nlog
 
+#####################################################################################################################################################
 
-
-#calculating the differences
-#bkn2power_band=abs(bkn2power_BIC-band_BIC)			#C1
-#bkn2power_three_comp=abs(bkn2power_BIC-three_comp_BIC)		#C2
-#bkn2power_bb_bandC=abs(bkn2power_BIC-bb_bandC_BIC)		#C3
-#band_three_comp=abs(band_BIC-three_comp_BIC)			#C4
-#band_bb_bandC=abs(band_BIC-bb_bandC_BIC)			#C5
-#three_comp_bb_bandC=abs(three_comp_BIC-bb_bandC_BIC)		#C6
-
-# for loop to compare the values and arrange in ascending order
-
-#Subplots
+#Subplot section that makes the 
 fig, (ay1, ay2) = plt.subplots(2, sharex=True, gridspec_kw = {'height_ratios':[2, 1]})
 
 plt.xlim(xmin=x_lim_min)
 plt.xlim(xmax=x_lim_max)
-ay1.plot(np.arange(range1, range1+len(bkn2power_BIC)), bkn2power_BIC, "v-", lw = 1.0, markersize=7, label='bkn2pow' )
-ay1.plot(np.arange(range1, range1+len(band_BIC)), band_BIC, "^-", lw = 1.0, markersize=7, label='Band')
-ay1.plot(np.arange(range1, range1+len(three_comp_BIC)), three_comp_BIC, "<-", lw = 1.0, markersize=7, label='BB + CPL + CPL')
-ay1.plot(np.arange(range1, range1+len(bb_bandC_BIC)), bb_bandC_BIC, ">-", lw = 1.0, markersize=7, label='BB + BandC')
+ay1.plot(np.arange(range1, range1+len(mo1_BIC)), mo1_BIC, "v-", lw = 1.0, markersize=7, label=mo1)
+ay1.plot(np.arange(range1, range1+len(mo2_BIC)), mo2_BIC, "^-", lw = 1.0, markersize=7, label=mo2)
+ay1.plot(np.arange(range1, range1+len(mo3_BIC)), mo3_BIC, "<-", lw = 1.0, markersize=7, label=mo3)
+ay1.plot(np.arange(range1, range1+len(mo4_BIC)), mo4_BIC, ">-", lw = 1.0, markersize=7, label=mo4)
 ay11=ay1.twinx()
 ay11.axis('off')
 ay11.plot(LC1_time, LC1_rate, lw=1.0, ls='steps-post', color='red', label='LC1')
@@ -85,18 +78,18 @@ ay12.plot(LC2_time, LC2_rate, lw=1.0, ls='steps-post', label='LC2', color ='blue
 ay1.legend(numpoints=1,prop={'size':10},loc="upper right")
 
 #combining the arrays into a text file
-col_stack = np.column_stack([bkn2power_BIC, band_BIC, three_comp_BIC, bb_bandC_BIC])
+col_stack = np.column_stack([mo1_BIC, mo2_BIC, mo3_BIC, mo4_BIC])
 col_stackT = col_stack.transpose()
 np.savetxt('BIC_Stack.txt', col_stackT, delimiter='  ')
 steps = 0
-table=tt.Texttable()
-headings=['Time Stamps', 'Strongest Correlation Model']
+table=tt.Texttable(max_width=0)
+headings=['Time Stamps', 'Strongest Correlation Model', 'Delta BIC 1', 'Delta BIC 2', 'Delta BIC 3', 'Models with ascending order of BICs' ]
 table.header(headings)
 for h in range(0,np.size(col_stackT,1)):
 	list1 = np.loadtxt("BIC_Stack.txt", unpack=True, usecols=[h])
 	list2 = np.array(['a','b','c','d'])
-	tups = zip(list1, list2); tups.sort(); zip(*tups)
-	#print tups
+	list3 = np.array([mo1, mo2, mo3, mo4])
+	tups = zip(list1, list2, list3); tups.sort(); zip(*tups)
 	d1=abs(tups[0][0]-tups[1][0])
 	d2=abs(tups[0][0]-tups[2][0])
 	d3=abs(tups[0][0]-tups[3][0])
@@ -106,38 +99,33 @@ for h in range(0,np.size(col_stackT,1)):
 	ay2.plot(time_stamps,d1,"-*", lw = 1.0, markersize=5, color= 'blue')
 	ay2.plot(time_stamps,d2,"-s", lw = 1.0, markersize=5, color= 'red')
 	ay2.plot(time_stamps,d3,"-8", lw = 1.0, markersize=5, color= 'green')
-	m1,m2,m3,m4=tups[0][1],tups[1][1],tups[2][1],tups[3][1]
+	m1,m2,m3,m4=tups[0][1][0],tups[1][1][0],tups[2][1][0],tups[3][1][0]
 	ay2.text(time_stamps,d1, m1+m2, fontsize = 10)
 	ay2.text(time_stamps,d2, m1+m3, fontsize = 10)
 	ay2.text(time_stamps,d3, m1+m4, fontsize = 10)
-	red_patch = mpatches.Patch(color='red', label='a=bkn2pow')
-	blue_patch = mpatches.Patch(color='blue', label='b=Band')
-	yellow_patch = mpatches.Patch(color='yellow', label='c=BB + CPL + CPL')
-	green_patch = mpatches.Patch(color='green', label='d=BB + BandC')
+	red_patch = mpatches.Patch(color='red', label='a='+mo1)
+	blue_patch = mpatches.Patch(color='blue', label='b='+mo2)
+	yellow_patch = mpatches.Patch(color='yellow', label='c='+mo3)
+	green_patch = mpatches.Patch(color='green', label='d='+mo4)
 	ay2.legend(handles=[red_patch, blue_patch, yellow_patch, green_patch], fontsize = 9)
 	steps=steps+1
 	
 	#Section to sort the strongest correlation model
+	m11,m22,m33,m44=tups[0][2],tups[1][2],tups[2][2],tups[3][2]
 	model_conv=''
 	if d1<=corr_lim:
-		if m1=="a":
-			model_conv='bkn2pow'
-		elif m1=='b':
-			model_conv='Band'
-		elif m1=='c':
-			model_conv='BB + CPL + CPL'
-		elif m1=='d':
-			model_conv='BB + BandC'
-		else:
-			model_conv='No model with strong correlation'
-		#print (model_conv+" is the strongest correlation model")
-	for row in zip(itt.repeat(time_stamps, np.size(col_stackT,1)), [model_conv]):
+		model_conv=m11+' and '+m22
+	elif d1>=corr_lim:
+		model_conv=' No strong correlation '
+	for row in zip(itt.repeat(time_stamps, np.size(col_stackT,1)), [model_conv], [d1], [d2], [d3], [m11+' < '+m22+' < '+m33+' < '+m44]):
 		table.add_row(row)
 s = table.draw()
 print s
-#ascii.write(s, 'TestTable1.txt', format='latex')		#Need to work on this, since s in in utf8 and I need to use ascii write on this, so that I can create a LaTeX table of the same
-	
+#ascii.write(s, 'TestTable1.txt', format='latex')	
 
+#####################################################################################################################################################	
+
+#This is the plotting section
 ay2.axhline(y=2, color='black', lw=0.7)
 ay2.axhline(y=6, color='black', lw=0.7)
 ay2.axhline(y=10, color='black', lw=0.7)
