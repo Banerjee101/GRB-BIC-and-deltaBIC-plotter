@@ -121,7 +121,7 @@ for h in range(0,np.size(col_stackT,1)):
 	elif d1>=corr_lim:
 		#model_conv='('+m11+') / ('+m22+') / ('+m33+') / ('+m44+')'
 		model_conv='all models have weak correlation'
-	for row in zip(itt.repeat(time_stamps, np.size(col_stackT,1)), [m11+' < '+m22+' < '+m33+' < '+m44], [d1], [d2], [d3], [model_conv]):
+	for row in zip(itt.repeat(time_stamps, np.size(col_stackT,1)), ['('+m11+') < ('+m22+') < ('+m33+') < ('+m44+')'], [d1], [d2], [d3], [model_conv]):
 		table.add_row(row)
 s = table.draw()
 print s
