@@ -129,13 +129,13 @@ for h in range(0,np.size(col_stackT,1)):
 		elif m1=='d':
 			model_conv='BB + BandC'
 		else:
-			model_conv='	'
+			model_conv='No model with strong correlation'
 		#print (model_conv+" is the strongest correlation model")
 	for row in zip(itt.repeat(time_stamps, np.size(col_stackT,1)), [model_conv]):
 		table.add_row(row)
 s = table.draw()
-print(s)
-	
+print s
+#ascii.write(s, 'TestTable1.txt', format='latex')		#Need to work on this, since s in in utf8 and I need to use ascii write on this, so that I can create a LaTeX table of the same
 	
 
 ay2.axhline(y=2, color='black', lw=0.7)
